@@ -1,0 +1,15 @@
+{% extends "header_layout.html" %}
+{% block body %}
+<div style="padding:10px 10px 10px 10px;font-family:Verdana, 'Microsoft YaHei', 微软雅黑;font-size:100%;color:#333333;">
+<form action="{{url_for('book_add')}}" method="post">
+    <div>
+        <textarea name="content" rows="80" style="width:100%">
+        {{default}}
+        </textarea>
+        <br>
+        <input type="text" name="filename"/>
+        <input type="submit" value="Submit"/>
+    </div>
+</form>
+</div>
+{% endblock %}

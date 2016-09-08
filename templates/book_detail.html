@@ -1,0 +1,10 @@
+{% extends "header_layout.html" %}
+{% block body %}
+<div style="padding:10px 10px 10px 10px;background-color:#cccccc">
+{% for i in content %}
+<p style="font-family:Verdana, 'Microsoft YaHei', 微软雅黑;font-size:100%;color:#333333">
+{{i}}
+</p>
+{% endfor %}
+</div>
+{% endblock %}

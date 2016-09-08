@@ -1,0 +1,2 @@
+
+py3: flask flask-login bs4

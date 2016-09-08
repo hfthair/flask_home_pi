@@ -1,0 +1,26 @@
+{% extends "header_layout.html" %}
+{% block body %}
+<div align="center" valign="center">
+    {% if next%}
+    <form action="{{ url_for('login', next=next) }}" method=post>
+    {% else %}
+    <form action="{{ url_for('login') }}" method=post>
+    {% endif %}
+        <div style="width:100%">
+            <h2>login</h2>
+            <br/>
+            <div>
+                <input required type="text" name="username" aria-label="name" placeholder="name">
+            </div>
+            <br/>
+            <div>
+                <input required type="password" name="passwd" aria-label="passwrord" placeholder="passwrord" autocomplete="off">
+            </div>
+            <br/>
+            <div>
+                <button type="submit">login</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

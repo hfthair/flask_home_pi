@@ -1,0 +1,9 @@
+{% extends "header_layout.html" %}
+{% block body %}
+<div style="padding:10px 10px 10px 10px;font-family:Verdana, 'Microsoft YaHei', 微软雅黑;font-size:100%;color:#333333;">
+<form action="{{url_for('book_thief')}}" method="post">
+URL<input type="text" name="url" style="width:100%"><br>
+<input type="submit" value="Submit">
+</form>
+</div>
+{% endblock %}
