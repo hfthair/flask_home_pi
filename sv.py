@@ -14,8 +14,8 @@ from flask import (Flask, request, redirect, Response, url_for,
 app = Flask(__name__)
 
 
-BOOK_ROOT = './root/books/'
-PIC_ROOT = './root/pics/'
+BOOK_ROOT = '/home/pi/books/'
+PIC_ROOT = '/home/pi/pics/'
 
 #############################################################################################################
 ############################################### login #######################################################
