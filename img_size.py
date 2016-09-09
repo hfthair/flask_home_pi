@@ -122,15 +122,16 @@ def what(file, h=None):
 ##########################################################################
 import struct
 def get_image_size(fname):
+    width, height = -1, -1
     with open(fname, 'rb') as fhandle:
         head = fhandle.read(24)
         if len(head) != 24:
-            return
+            return width, height
         imgtype = what(fname)
         if imgtype == 'png':
             check = struct.unpack('>i', head[4:8])[0]
             if check != 0x0d0a1a0a:
-                return
+                return width, height
             width, height = struct.unpack('>ii', head[16:24])
         elif imgtype == 'gif':
             width, height = struct.unpack('<HH', head[6:10])
@@ -150,8 +151,8 @@ def get_image_size(fname):
                 fhandle.seek(1, 1)  # Skip `precision' byte.
                 height, width = struct.unpack('>HH', fhandle.read(4))
             except Exception: #IGNORE:W0703
-                return
+                return width, height
         else:
-            return
+            return width, height
         return width, height
 
