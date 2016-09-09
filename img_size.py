@@ -1,39 +1,9 @@
-#-------------------------------------------------------------------------------
-# Name:        get_image_size
-# Purpose:     extract image dimensions given a file path using just
-#              core modules
-#
-# Author:      Paulo Scardine (based on code from Emmanuel VAÏSSE)
-#
-# Created:     26/09/2013
-# Copyright:   (c) Paulo Scardine 2013
-# Licence:     MIT
-#-------------------------------------------------------------------------------
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 #############################################################################################################
 # copy form imghdr
 #############################################################################################################
-def what(file, h=None):
-    f = None
-    try:
-        if h is None:
-            if isinstance(file, str):
-                f = open(file, 'rb')
-                h = f.read(32)
-            else:
-                location = file.tell()
-                h = file.read(32)
-                file.seek(location)
-        for tf in tests:
-            res = tf(h, f)
-            if res:
-                return res
-    finally:
-        if f: f.close()
-    return None
-
 
 tests = []
 
@@ -128,12 +98,28 @@ def test_exr(h, f):
 tests.append(test_exr)
 
 
+def what(file, h=None):
+    f = None
+    try:
+        if h is None:
+            if isinstance(file, str):
+                f = open(file, 'rb')
+                h = f.read(32)
+            else:
+                location = file.tell()
+                h = file.read(32)
+                file.seek(location)
+        for tf in tests:
+            res = tf(h, f)
+            if res:
+                return res
+    finally:
+        if f: f.close()
+    return None
 
-#############################################################################################################
-# other solution
-#
-#############################################################################################################
-
+###########################################################################
+## get_image_size
+##########################################################################
 import struct
 def get_image_size(fname):
     with open(fname, 'rb') as fhandle:
