@@ -13,9 +13,13 @@ from flask import (Flask, request, redirect, Response, url_for,
 
 app = Flask(__name__)
 
+__ROOT_ = './root/' # '/home/pi/'
+__ROOT_ = os.path.abspath(__ROOT_)
 
-BOOK_ROOT = '/home/pi/books/'
-PIC_ROOT = '/home/pi/pics/'
+BOOK_ROOT = os.path.join(__ROOT_, 'books/')
+PIC_ROOT = os.path.join(__ROOT_, 'pics/')
+VIDEO_ROOT = os.path.join(__ROOT_, 'videos/')
+
 
 #############################################################################################################
 ############################################### login #######################################################
@@ -125,10 +129,6 @@ def secure_filename(s):
     s = s.replace('/', '_')
     s = s.replace('..', '_')
     s = s.replace(' ', '_')
-    s = s.replace('(', '_')
-    s = s.replace(')', '_')
-    s = s.replace('[', '_')
-    s = s.replace(']', '_')
     return s
 
 def secure_pathname(s):
@@ -258,6 +258,27 @@ def pic_list():
         if os.path.isdir(p):
             res.append(i)
     return render_template('gallery_list.html', picdirs = res)
+
+@app.route('/video_file/<path:name>')
+def video_file(name):
+    t = secure_filename(name)
+    return send_from_directory(r, t)
+
+@app.route('/videos')
+def video_list():
+    files = []
+    root = VIDEO_ROOT
+    for i in os.listdir(root):
+        p = os.path.join(root, i)
+        if os.path.isfile(p):
+            files.append(i)
+    return render_template('video_list.html', videos=files)
+
+@app.route('/video/<path:name>')
+def video_play(name):
+    t = secure_filename(name)
+    return redirect(url_for('video_file', name=t))
+
 
 @app.route('/index')
 @app.route('/')
