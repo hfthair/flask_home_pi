@@ -21,17 +21,16 @@ PIC_ROOT = os.path.join(__ROOT_, 'pics/')
 VIDEO_ROOT = os.path.join(__ROOT_, 'videos/')
 
 
-#############################################################################################################
-############################################### login #######################################################
+##############################################################
+######################## login ###############################
 
 import base64
 from flask_login import (LoginManager, current_user, login_required,
-                            login_user, logout_user, UserMixin,
-                            confirm_login, fresh_login_required)
+                            login_user, logout_user, UserMixin)
 
 app.config["SECRET_KEY"] = "ITSASnrmUTYewqbECRETkutepVC.XddJGrio3fKHFKDkdkls-KDSkdkfpLFDOSF"
 login_manager = LoginManager()
-login_manager.init_app(app)
+login_manager.setup_app(app)
 login_manager.login_view = 'login_failed'
 
 class User(UserMixin):
@@ -64,27 +63,6 @@ def load_user(id):
     ret = get_from_id(id)
     return ret
 
-@login_manager.request_loader
-def load_user(request):
-    api_key = request.args.get('api_key')
-    if api_key:
-        user, passwd = api_key.split(':')
-        cUser = get_from_name(user)
-        if cUser and cUser.name == user and cUser.passwd == passwd and cUser.is_active():
-            return cUser
-    api_key = request.headers.get('Authorization')
-    if api_key:
-        api_key = api_key.replace('Basic ', '', 1)
-        try:
-            api_key = base64.b64decode(api_key)
-        except TypeError:
-            traceback.print_exc()
-        user, passwd = api_key.split(':')
-        cUser = get_from_name(user)
-        if cUser and cUser.name == user and cUser.passwd == passwd and cUser.is_active():
-            return cUser
-    return None
-
 def __redirect_url():
     return request.args.get('next') or url_for('index') #request.referrer
 
@@ -95,7 +73,7 @@ def __inner_login():
     if username != '' and passwd != '':
         cUser = get_from_name(username)
         if cUser != None and cUser.passwd == passwd:
-            if login_user(cUser, remember = remember):
+            if login_user(cUser, remember=remember):
                 return True
     return False
 
@@ -118,9 +96,9 @@ def login_failed():
 @login_required
 def logout():
     logout_user()
-    return "logout"
+    return redirect(url_for('login', next=url_for('index')))
 
-#############################################################################################################
+######################## login end ###########################
 
 def secure_filename(s):
     s = s.replace('\\', '_')
@@ -278,7 +256,6 @@ def video_list():
 def video_play(name):
     t = secure_filename(name)
     return redirect(url_for('video_file', name=t))
-
 
 @app.route('/index')
 @app.route('/')

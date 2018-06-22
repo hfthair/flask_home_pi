@@ -4,20 +4,28 @@
         <meta charset="UTF-8"> 
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>swga: happy foot hair!!</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
     </header>
-    <body>
-        <div>
-            <ul>
-                <li>
-                    <a href="{{url_for('index')}}"> MAIN PAGE </a>
-                    |
-                    <a href="{{url_for('books')}}"> BOOKS </a>
-                    |
-                    <a href="{{url_for('pic_list')}}"> PICTURES </a>
-                    |
-                    <a href="{{url_for('video_list')}}"> VIDEOS </a>
-                </li>
-            </ul>
+    <body style="background: rgb(93, 126, 155)">
+        <div style="margin: 8px; margin-bottom: 20px;">
+            <table width="100%">
+                <tbody>
+                    <tr>
+                        <td align="left" width="500">
+                            <strong>
+                                <a class="header-font" href="{{url_for('index')}}">SERVER on PI</a>
+                                | <a class="header-font" href="{{url_for('books')}}"> Books </a>
+                                | <a class="header-font" href="{{url_for('pic_list')}}"> Pictures </a>
+                                | <a class="header-font" href="{{url_for('video_list')}}"> Videos </a>
+                            </strong>
+                        </td>
+                        <td align="right">
+                            <a class="header-font" href="{{url_for('logout')}}">LOGOUT</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- <hr noshade="noshade" style="border-top: 2px solid black;">-->
         </div>
         <div id="div_flash">
             {% with messages = get_flashed_messages() %}

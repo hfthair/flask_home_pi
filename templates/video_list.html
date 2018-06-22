@@ -1,6 +1,6 @@
 {% extends "header_layout.html" %}
 {% block body %}
-<div style="width:100%;padding:10px 10px 10px 10px;">
+<div style="padding:10px;margin:20px;border:1px solid black;min-height:400px">
 {% for i in videos %}
 <p style="font-family:Verdana, 'Microsoft YaHei', 微软雅黑;font-size:150%;color:#333333">
     <a href="{{url_for('video_play', name=i)}}">
