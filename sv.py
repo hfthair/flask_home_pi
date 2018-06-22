@@ -20,10 +20,8 @@ BOOK_ROOT = os.path.join(__ROOT_, 'books/')
 PIC_ROOT = os.path.join(__ROOT_, 'pics/')
 VIDEO_ROOT = os.path.join(__ROOT_, 'videos/')
 
-
 ##############################################################
 ######################## login ###############################
-
 import base64
 from flask_login import (LoginManager, current_user, login_required,
                             login_user, logout_user, UserMixin)
@@ -34,33 +32,41 @@ login_manager.setup_app(app)
 login_manager.login_view = 'login_failed'
 
 class User(UserMixin):
-    def __init__(self, id, name, passwd, active=True):
+    __users = {
+        'a1111': ('a1111', 'happy', 'foothair')
+    }
+    def __init__(self, id, name, passwd):
         self.id = id
         self.name = name
         self.passwd = passwd
-        self.active = active
+
+    def get_id(self):
+        return self.id
 
     def is_active(self):
-        return self.active
+        return True
 
-__s_p_ = {
-    '1':User('1', 'happy', 'foothair')
-}
+    def is_anonymous(self):
+        return False
 
-def get_from_name(name):
-    for v in __s_p_.values():
-        if v.name == name:
-            return v
-    return None
+    @staticmethod
+    def from_id(id):
+        r = User.__users.get(id, None)
+        if r:
+            return User(*r)
+        return None
 
-def get_from_id(id):
-    if id in __s_p_.keys():
-        return __s_p_[id]
-    return None
+    @staticmethod
+    def author_check(name, pwd):
+        for i in User.__users:
+            r = User.__users[i]
+            if r[1] == name and r[2] == pwd:
+                return User(*r)
+        return None
 
 @login_manager.user_loader
 def load_user(id):
-    ret = get_from_id(id)
+    ret = User.from_id(id)
     return ret
 
 def __redirect_url():
@@ -71,8 +77,8 @@ def __inner_login():
     passwd = request.form.get('passwd', '')
     remember = (request.form.get('remember', 'no') == 'yes')
     if username != '' and passwd != '':
-        cUser = get_from_name(username)
-        if cUser != None and cUser.passwd == passwd:
+        cUser = User.author_check(username, passwd)
+        if cUser:
             if login_user(cUser, remember=remember):
                 return True
     return False
@@ -84,7 +90,7 @@ def login():
         if __inner_login():
             return redirect(__redirect_url())
         else:
-            flash(u'用户名或密码错误')
+            flash(u'wrong username or password')
     return render_template('login.html', next=next)
 
 @app.route('/login_failed')
