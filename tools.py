@@ -4,7 +4,8 @@
 import requests
 from bs4 import BeautifulSoup
 
-black_list = ('加入书架', '小说网', '加入书签', '投票推荐', '上一页', '下一页', '错误举报')
+black_list = ('加入书架', '小说网', '加入书签', '投票推荐', '上一页', \
+            '下一页', '错误举报', '上一章', '下一章')
 
 def html2text(html):
     for script in html(["script", "style"]):
@@ -37,8 +38,8 @@ def read_content_from_url(url):
     return s
 
 if __name__ == '__main__':
-    u = "http://www.7kankan.com/files/article/html/42/42515/7603088.html"
+    u = "https://m.qidian.com/book/1011979931/0"
     s = read_content_from_url(u)
     print(s)
-    with open('c.txt', 'w', encoding='utf8') as f:
-        f.write(s)
+    # with open('c.txt', 'w', encoding='utf8') as f:
+    #     f.write(s)
