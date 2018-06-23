@@ -26,20 +26,31 @@ def html2text(html):
     chunks = filter(test, chunks)
     return '\n\n'.join(chunk for chunk in chunks if chunk)
 
+def guess_title(html):
+    hs = html.find_all(['h1', 'h2', 'h3'])
+    ts = (h.text for h in hs)
+    ts = (t for t in ts if len(t) > 1)
+    r = set()
+    for t in ts:
+        if t not in r:
+            r.add(t)
+    return '-'.join(r)
+
 def read_content_from_url(url):
     content = requests.get(url, timeout=1.5)
 
     soup = BeautifulSoup(content.content, 'html.parser')
+    t = guess_title(soup)
     body = soup.find('body')
     if body != None:
         soup = body
 
     s = html2text(soup)
-    return s
+    return t, s
 
 if __name__ == '__main__':
     u = "https://m.qidian.com/book/1011979931/0"
-    s = read_content_from_url(u)
-    print(s)
+    t, s = read_content_from_url(u)
+    print(t)
     # with open('c.txt', 'w', encoding='utf8') as f:
     #     f.write(s)
