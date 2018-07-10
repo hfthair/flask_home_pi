@@ -4,7 +4,7 @@
 import os
 import traceback
 import time
-from tools import read_str_from_url
+from tools import read_content_from_url
 from img_size import get_image_size
 from flask import (Flask, request, redirect, Response, url_for, 
                     send_from_directory, jsonify, send_file, 
@@ -178,7 +178,7 @@ def books():
 def book_thief():
     if request.method == 'POST':
         url = request.form.get('url')
-        c = read_str_from_url(url)
+        c = read_content_from_url(url)
         return render_template('book_add.html', default = c)
     return render_template('book_thief.html')
 
