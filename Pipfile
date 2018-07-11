@@ -8,6 +8,7 @@ flask = "*"
 "bs4" = "*"
 flask-login = "*"
 requests = "*"
+celery = {extras = ["redis"]}
 
 [dev-packages]
 

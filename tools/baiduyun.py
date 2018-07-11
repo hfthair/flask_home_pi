@@ -1,5 +1,6 @@
 '''this file is highly inspired by @tychxn:
-    https://github.com/tychxn/baidu-wangpan-parse'''
+    https://github.com/tychxn/baidu-wangpan-parse
+    4e8e1177f297712eb51b2d960d58d39d9b129e9c'''
 import time
 import re
 import json
