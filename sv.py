@@ -6,19 +6,22 @@ import traceback
 import time
 from tools import read_content_from_url
 from img_size import get_image_size
+from celery import Celery
 from flask import (Flask, request, redirect, Response, url_for, 
                     send_from_directory, jsonify, send_file, 
                     render_template, flash, stream_with_context
                     )
 
 app = Flask(__name__)
+celery = Celery(app.name, \
+    backend='redis://localhost:6379/0', broker='redis://localhost:6379/0')
 
-__ROOT_ = './root/' # '/home/pi/'
-__ROOT_ = os.path.abspath(__ROOT_)
+__root_dir__ = './root/' # '/home/pi/'
+__root_dir__ = os.path.abspath(__root_dir__)
 
-BOOK_ROOT = os.path.join(__ROOT_, 'books/')
-PIC_ROOT = os.path.join(__ROOT_, 'pics/')
-VIDEO_ROOT = os.path.join(__ROOT_, 'videos/')
+__root_book__ = os.path.join(__root_dir__, 'books/')
+__root_pic__ = os.path.join(__root_dir__, 'pics/')
+__root_video__ = os.path.join(__root_dir__, 'videos/')
 
 ##############################################################
 ######################## login ###############################
@@ -152,7 +155,7 @@ def stream_template(template_name, **context):
 @login_required
 def book_detail(bookname):
     bookname = secure_filename(bookname)
-    bookpath = os.path.join(BOOK_ROOT, bookname)
+    bookpath = os.path.join(__root_book__, bookname)
     if not bookpath.endswith('.txt'):
         bookpath = bookpath + '.txt'
     f = open(bookpath, 'r', encoding='utf-8')
@@ -167,8 +170,8 @@ def book_detail(bookname):
 @login_required
 def books():
     res = []
-    for i in os.listdir(BOOK_ROOT):
-        p = os.path.join(BOOK_ROOT, i)
+    for i in os.listdir(__root_book__):
+        p = os.path.join(__root_book__, i)
         if os.path.isfile(p) and i.endswith('.txt'):
             res.append(i[:-4])
     return render_template('book_list.html', books = res)
@@ -191,7 +194,7 @@ def book_add():
         n = secure_filename(n)
         if not n.endswith('.txt'):
             n = n + '.txt'
-        pt = os.path.join(BOOK_ROOT, n)
+        pt = os.path.join(__root_book__, n)
         if os.path.exists(pt):
             pt = pt[:-4]
             pt = pt + str(time.time()) + '.txt'
@@ -203,7 +206,7 @@ def book_add():
 @app.route('/pic/<path:picname>')
 def pic_file(picname):
     picname = secure_pathname(picname)
-    filepath = os.path.join(PIC_ROOT, picname)
+    filepath = os.path.join(__root_pic__, picname)
     filepath = os.path.abspath(filepath)
     if os.path.exists(filepath) and os.path.isfile(filepath):
         p = os.path.dirname(filepath)
@@ -214,7 +217,7 @@ def pic_file(picname):
 @app.route('/gallery/<path:dir>')
 def gallery(dir):
     dir = secure_filename(dir)
-    path = os.path.join(PIC_ROOT, dir)
+    path = os.path.join(__root_pic__, dir)
     ret = []
     for i in os.listdir(path):
         p = os.path.join(path, i)
@@ -237,8 +240,8 @@ def gallery(dir):
 @app.route('/pics')
 def pic_list():
     res = []
-    for i in os.listdir(PIC_ROOT):
-        p = os.path.join(PIC_ROOT, i)
+    for i in os.listdir(__root_pic__):
+        p = os.path.join(__root_pic__, i)
         if os.path.isdir(p):
             res.append(i)
     return render_template('gallery_list.html', picdirs = res)
@@ -251,7 +254,7 @@ def video_file(name):
 @app.route('/videos')
 def video_list():
     files = []
-    root = VIDEO_ROOT
+    root = __root_video__
     for i in os.listdir(root):
         p = os.path.join(root, i)
         if os.path.isfile(p):
